@@ -164,7 +164,7 @@ class BigFood extends Food{
             w = this.size * 2 * progress,
             x = this.x - this.size ,
             h = Math.min(vh, vw);
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = '#f8bcca';
         ctx.fillRect(x, y, w, h);
         this._tempDrawing = this.drawProgress;
     }
