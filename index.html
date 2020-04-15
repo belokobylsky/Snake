@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Snake</title>
+</head>
+<body>
+    <h1>The snake game</h1>
+    <div class="choosing-game">
+        <h2 class="choosing-game__head-text">Choose your game</h2>
+        <ul class="choosing-game__list">
+            <li class="classic-snake">Classic</li>
+            <li class="campaign-snake">Сampaign</li>
+        </ul>
+    </div>
+    <div class="game-field">
+        <div class="speed">
+            <p class="speed-paragraph">Choose the speed of the snake</p>
+            <input type="range" name="snake-speed" min="2" max="12" step="1" id="snake-speed">
+        </div>
+        <canvas class="snake-field"></canvas>
+        <p class="game-score">0</p>
+    </div>
+    <div class="mobile-arrows">
+        <button class="arrow-up" data-key="ArrowUp">↑</button>
+        <div class="other-arrows">
+            <button class="arrow-left" data-key="ArrowLeft">←</button>
+            <button class="arrow-down" data-key="ArrowDown">↓</button>
+            <button class="arrow-right" data-key="ArrowRight">→</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
