@@ -138,22 +138,23 @@ class BigFood extends Food{
     makeFood() {
         super.makeFood();
         let thisObj = this;
+        console.log(thisObj)
         if (this.typeSize > 1 && !this.detected && !this.eaten) {
             new Promise(function (res, rej) {
                 thisObj.detected = true;
                 setTimeout(function () {
-                    if (!thisObj.eaten) {
-                        thisObj.typeSize = 1;
-                        thisObj.x = thisObj.randomize(cvs.width);
-                        thisObj.y = thisObj.randomize(cvs.height);
-                        thisObj.size = vw / 2.5;
-                    }
+                    thisObj.typeSize = 1;
+                    thisObj.x = thisObj.randomize(cvs.width);
+                    thisObj.y = thisObj.randomize(cvs.height);
+                    thisObj.size = Math.max(vw, vh) / 2.5;
                 }, 5000);
             }).then(() => {
                 thisObj.build();
                 ctx.fill();
             });
         } else if(this.eaten) {
+            setTimeout(() => thisObj.typeSize = 6, 1000);
+            thisObj.size = Math.max(vw, vh) * 2.5;
             this.hideProgress();
         }
         ctx.closePath();
@@ -184,8 +185,13 @@ let smallFood = new Food(Math.max(vw, vh) / 2.5, 1),
     bigFood = new BigFood(Math.max(vw, vh) * 2.5, 6);
 
 let stopper = false;
+let firstClick = true;
+speedRange.onchange = function () {
+    speedRange.blur();
+    if (firstClick) snake.speed = speedRange.value;
+}
 let game = {
-    play(snakeObj, stop) {
+    play(snakeObj) {
         let thisObj = this;
         requestAnimationFrame(function animatePlay() {
             let _snakeFood; 
@@ -220,17 +226,14 @@ let game = {
         scoreElem.innerHTML = 0;
         snakeObj.build();
         stopper = true;
+        firstClick = true;
     }
 }
 snake.direction = {
     pos: '',
     coord: ''
 };
-let firstClick = true;
-speedRange.onchange = function () {
-    speedRange.blur();
-    if (firstClick) snake.speed = speedRange.value;
-}
+
 document.addEventListener('keydown', function (event) {
     if (snake.direction.pos !== event.key.slice(5).toLowerCase()) {
         switch (event.key) {
@@ -265,6 +268,7 @@ document.addEventListener('keydown', function (event) {
         }
         snake.direction.pos = event.key.slice(5).toLowerCase();
         if (firstClick) {
+            stopper = false;
             game.play(snake);
             firstClick = false;
         }
