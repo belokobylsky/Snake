@@ -121,7 +121,7 @@ class Food extends FieldPart {
         this.eaten = false;
     }
     randomize(cvsType) {
-        return Math.random() * (cvsType - this.size * 2) + this.size * 2;
+        return Math.random() * (cvsType - this.size * 4) + this.size * 2;
     }
     makeFood() {
         ctx.beginPath();
