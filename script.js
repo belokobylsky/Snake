@@ -121,7 +121,7 @@ class Food extends FieldPart {
         this.eaten = false;
     }
     randomize(cvsType) {
-        return Math.random() * (cvsType - this.size * 2)
+        return Math.random() * (cvsType - this.size * 2) + this.size * 2;
     }
     makeFood() {
         ctx.beginPath();
@@ -180,7 +180,7 @@ class BigFood extends Food{
     }
     hideProgress() {
         let bar = document.querySelector('.snake__progress-bar');
-        bar.style.display = 'none';
+        setTimeout(() => bar.style.display = 'none', 0)
         this.notFirstMade = false;
     }
 }
