@@ -68,6 +68,12 @@ h1, h2 {
     flex-wrap: wrap;
     width: 12rem;
 }
+.snake__progress-bar {
+    display: block;
+    position: absolute;
+    z-index: 5;
+    height: 1vmin;
+}
 .arrow-up {
     margin-bottom: .45rem;
 }

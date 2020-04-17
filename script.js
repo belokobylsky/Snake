@@ -1,5 +1,6 @@
 'use strict';
-const cvs = document.querySelector('.snake-field'),
+const field = document.querySelector('.game-field'),
+    cvs = document.querySelector('.snake-field'),
     ctx = cvs.getContext('2d'),
     scoreElem = document.querySelector('.game-score'),
     speedRange = document.querySelector('#snake-speed'),
@@ -8,7 +9,7 @@ const cvs = document.querySelector('.snake-field'),
 
 cvs.width = 75 * vw;
 cvs.height = 60 * vh;
-document.querySelector('.game-field').style.width = cvs.width + 'px';
+field.style.width = cvs.width + 'px';
 
 
 
@@ -138,7 +139,6 @@ class BigFood extends Food{
     makeFood() {
         super.makeFood();
         let thisObj = this;
-        console.log(thisObj)
         if (this.typeSize > 1 && !this.detected && !this.eaten) {
             new Promise(function (res, rej) {
                 thisObj.detected = true;
@@ -160,25 +160,28 @@ class BigFood extends Food{
         ctx.closePath();
     }
     drawProgress(progress) {
-        ctx.beginPath();
-        let y = this.y + this.size + Math.min(vh, vw) * 1.5,
-            w = this.size * 2 * progress,
-            x = this.x - this.size ,
-            h = Math.min(vh, vw);
-        ctx.fillStyle = '#f8bcca';
-        ctx.fillRect(x, y, w, h);
-        this._tempDrawing = this.drawProgress;
+        if (!this.notFirstMade) {
+            this.startBar = performance.now();
+        }
+        let bar;
+        if (!document.querySelector('.snake__progress-bar')) {
+            bar = document.createElement('span');
+            bar.classList.add('snake__progress-bar');
+        } else {
+            bar = document.querySelector('.snake__progress-bar');
+            bar.style.display = 'block';
+        }
+        bar.style.top = this.y + this.size + Math.min(vh, vw) * 1.5 + 'px';
+        bar.style.left = this.x - this.size + 'px';
+        bar.style.width = this.size * 2 - this.size * 2 * progress + 'px';
+        bar.style.backgroundColor = '#f8bcca';
+        field.append(bar);
+        this.notFirstMade = true;
     }
     hideProgress() {
-        ctx.beginPath();
-        let y = this.y + this.size + Math.min(vh, vw),
-            w = this.size * 2 + Math.min(vh, vw),
-            x = this.x - this.size ,
-            h = Math.min(vh, vw) * 2;
-        ctx.clearRect(x, y, w, h);
-        this.drawProgress = null;
-        let thisObj = this;
-        setTimeout(() => thisObj.drawProgress = thisObj._tempDrawing, 5000);
+        let bar = document.querySelector('.snake__progress-bar');
+        bar.style.display = 'none';
+        this.notFirstMade = false;
     }
 }
 let smallFood = new Food(Math.max(vw, vh) / 2.5, 1),
@@ -201,17 +204,16 @@ let game = {
             .catch(thisObj.gameOver);
             !stopper && requestAnimationFrame(animatePlay); // for perfomance
             if(_snakeFood.typeSize > 1) {
-                let start = performance.now();
-                requestAnimationFrame(function animateTimeBar(time) {
-                    let timeFraction = (time - start) / 5000;
-                    if (timeFraction > 1) timeFraction = 1;
-                    if(_snakeFood.drawProgress) _snakeFood.drawProgress(timeFraction);
-                    if (timeFraction < 1) {
-                        requestAnimationFrame(animateTimeBar);
-                    } else {
-                        _snakeFood.hideProgress();
-                    }
-                })
+                let time = performance.now(),
+                    timeFraction = (time - _snakeFood.startBar) / 5000,
+                    removed;
+                // if (timeFraction > 1) timeFraction = 1;
+                if (timeFraction < 1 || !timeFraction) {
+                    timeFraction ? _snakeFood.drawProgress(timeFraction) : _snakeFood.drawProgress(0);
+                } else if (!removed) {
+                    removed = true;
+                    _snakeFood.hideProgress();
+                }
             }
         });
     },
